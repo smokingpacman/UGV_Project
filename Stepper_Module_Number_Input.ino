@@ -37,6 +37,7 @@ int StepsRequired;
 Stepper steppermotor(STEPS_PER_REV, 8, 10, 9, 11);
 
 float myNumber;
+int flag = 0;
 
 void setup()
 {
@@ -45,10 +46,13 @@ Serial.begin(9600);
  
 void loop()
 {
-  Serial.println("How many degrees?");
-  while(Serial.available()==0){
-    
+
+    Serial.println("How many degrees?");
+
+  while(Serial.available() == 0){
+    // do nothing while it waits for something to appear.
   }
+  
   myNumber = Serial.parseInt();
   Serial.print("You chose: ");
   Serial.println(myNumber);
@@ -60,4 +64,8 @@ void loop()
 
   steppermotor.setSpeed(700);
   steppermotor.step(fraction);
+
+  Serial.end();
+  Serial.begin(9600); // Don't ask me why this needs to exist... without it, the program will somehow write a 0 into the input or something and fuck shit up.
+                      // this is totally not an ideal solution because... it's goign to break the IO stream and can be problematic?
 }
