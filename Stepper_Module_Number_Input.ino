@@ -1,14 +1,4 @@
-/*
-  Stepper Motor Demonstration 1
-  Stepper-Demo1.ino
-  Demonstrates 28BYJ-48 Unipolar Stepper with ULN2003 Driver
-  Uses Arduino Stepper Library
- 
-  DroneBot Workshop 2018
-  https://dronebotworkshop.com
-*/
- 
-//Include the Arduino Stepper Library
+
 #include <Stepper.h>
 #include <math.h>
  
@@ -37,33 +27,32 @@ int StepsRequired;
 Stepper steppermotor(STEPS_PER_REV, 8, 10, 9, 11);
 
 float myNumber;
-int flag = 0;
 
-void setup()
-{
+void setup(){
+  
 Serial.begin(9600);
+
 }
  
-void loop()
-{
+void loop(){
 
-    Serial.println("How many degrees?");
+  Serial.println("How many degrees?");
 
   while(Serial.available() == 0){
     // do nothing while it waits for something to appear.
   }
   
-  myNumber = Serial.parseInt();
+  myNumber = Serial.parseInt(); // parses an integer from the serial input. can be replaced with different function to look for commands etc later.r
   Serial.print("You chose: ");
   Serial.println(myNumber);
 
   // convert degrees into steps
-  float fraction = (myNumber/360.0)*STEPS_PER_OUT_REV;
+  float StepsRequired = (myNumber/360.0)*STEPS_PER_OUT_REV;
   Serial.print("No. of steps: ");
-  Serial.println(fraction);
+  Serial.println(StepsRequired);
 
-  steppermotor.setSpeed(700);
-  steppermotor.step(fraction);
+  steppermotor.setSpeed(700); // not sure if 700 is the fastest speed??? just use it because it seems to work.
+  steppermotor.step(StepsRequired); 
 
   Serial.end();
   Serial.begin(9600); // Don't ask me why this needs to exist... without it, the program will somehow write a 0 into the input or something and fuck shit up.
