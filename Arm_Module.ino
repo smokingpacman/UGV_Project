@@ -1,4 +1,3 @@
-
 #include <Stepper.h>
 #include <math.h>
 
@@ -31,48 +30,74 @@ float arm2_position = 0; // keeps track of the number of steps away from origina
                        // in a different position, it will set that as "home"
 
 void setup(){
-
-  Serial.println("Initializing...");
-  Serial.println("Starting serial connection");
   Serial.begin(9600);
-
-
+  Serial.println("Initializing...");
+  Serial.println("Testing serial connection");
 }
 
 void loop(){
-  
-  Serial.println("What is your command?");
-
+  Serial.print("What is your command? ");
+  Serial.println("rotate/reset/status");
   while(Serial.available() == 0){
     // do nothing while it waits for something to appear.
   }
-
-  float arm1_input = Serial.parseFloat();
-  float arm2_input = Serial.parseFloat();
-
+  String command = Serial.readStringUntil('\n');
   Serial.end();
   Serial.begin(9600);
 
-  Serial.println("Please confirm values...");
-  Serial.print("Arm 1: ");
-  Serial.println(arm1_input);
-  Serial.print("Arm 2: ");
-  Serial.println(arm2_input);
-
-  Serial.end();
-  Serial.begin(9600);
-
-  Serial.println("Are those values correct? YES/NO");
-
-  while(Serial.available() == 0){
-    // do nothing while it waits for something to appear.
-  }
+  if(command == "rotate"){
+    Serial.println("How many degrees?");
+    while(Serial.available() == 0){
+      // do nothing while it waits for something to appear.
+    }
+    float arm1_input = Serial.parseFloat();
+    float arm2_input = Serial.parseFloat();
+    Serial.end();
+    Serial.begin(9600);
   
-  String confirmation = Serial.readStringUntil('\n');
+    Serial.println("Please confirm values...");
+    Serial.print("Arm 1: ");
+    Serial.println(arm1_input);
+    Serial.print("Arm 2: ");
+    Serial.println(arm2_input);
+    Serial.println("Are those values correct? y/n");
+    while(Serial.available() == 0){
+      // do nothing while it waits for something to appear.
+    }
+    String confirmation = Serial.readStringUntil('\n');
+    Serial.end();
+    Serial.begin(9600);
 
-  if (confirmation == "YES"){
-    float arm1_stepsRequired = (arm1_input/360.0)*STEPS_PER_OUT_REV;
-    float arm2_stepsRequired = (arm2_input/360.0)*STEPS_PER_OUT_REV;
+    if (confirmation == "y"){
+      float arm1_stepsRequired = (arm1_input/360.0)*STEPS_PER_OUT_REV;
+      float arm2_stepsRequired = (arm2_input/360.0)*STEPS_PER_OUT_REV;
+      
+      Serial.print("Stepping arm 1 by ");
+      Serial.println(arm1_stepsRequired);
+      arm1.setSpeed(700); // not sure if 700 is the fastest speed??? just use it because it seems to work.
+      arm1.step(arm1_stepsRequired);
+      Serial.println("Complete");
+      
+      Serial.print("Stepping arm 2 by ");
+      Serial.println(arm2_stepsRequired);
+      arm2.setSpeed(700); // not sure if 700 is the fastest speed??? just use it because it seems to work.
+      arm2.step(arm2_stepsRequired);
+      Serial.println("Complete");
+  
+      arm1_position = arm1_position + arm1_stepsRequired;
+      arm2_position = arm2_position + arm2_stepsRequired;
+  
+      Serial.println("Arms successfully rotated");
+    } else if (confirmation == "n"){
+  
+      Serial.println("Aborting process...");
+      
+    } else {
+      Serial.println("Invalid input");
+    }
+  } else if(command == "reset"){
+    float arm1_stepsRequired = arm1_position*-1;
+    float arm2_stepsRequired = arm2_position*-1;
     
     Serial.print("Stepping arm 1 by ");
     Serial.println(arm1_stepsRequired);
@@ -86,26 +111,20 @@ void loop(){
     arm2.step(arm2_stepsRequired);
     Serial.println("Complete");
 
-    arm1_position = arm1_position + arm1_stepsRequired;
-    arm2_position = arm2_position + arm2_stepsRequired;
+    arm1_position = 0;
+    arm2_position = 0;
 
-    Serial.println("Success");
-    
-  } else if (confirmation == "NO"){
-
-    Serial.println("Aborting process...");
-    
-  } else {
-    Serial.println("Invalid input");
+    Serial.println("Arms reset to initial position");
+  } else if(command == "status"){
+    Serial.println("Status report:");
+    Serial.print("Arm 1 position: ");
+    Serial.print(arm1_position);
+    Serial.println("steps");
+    Serial.print("Arm 2 position: ");
+    Serial.print(arm2_position);
+    Serial.println("steps");
+    Serial.println();
   }
-
-  Serial.println("Status report:");
-  Serial.print("Arm 1 position: ");
-  Serial.print(arm1_position);
-  Serial.println("steps");
-  Serial.print("Arm 2 position: ");
-  Serial.print(arm2_position);
-  Serial.println("steps");
   
   Serial.end();
   Serial.begin(9600); // Don't ask me why this needs to exist... without it, the program will somehow write a 0 into the input or something and fuck shit up.
