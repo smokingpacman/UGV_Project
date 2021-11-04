@@ -1,9 +1,7 @@
 
 #include <Stepper.h>
 #include <math.h>
- 
-// Define Constants
- 
+
 // Number of steps per internal motor revolution 
 const float STEPS_PER_REV = 32.0; 
  
@@ -27,36 +25,88 @@ int StepsRequired;
 Stepper arm1(STEPS_PER_REV, 30, 32, 31, 33);
 Stepper arm2(STEPS_PER_REV, 34, 36, 35, 37);
 
-float myNumber;
+float arm1_position = 0;
+float arm2_position = 0; // keeps track of the number of steps away from original position the arm was in.
+                       // zero is the position at initialisation, if the robot initialises
+                       // in a different position, it will set that as "home"
 
 void setup(){
-  
-Serial.begin(9600);
+
+  Serial.println("Initializing...");
+  Serial.println("Starting serial connection");
+  Serial.begin(9600);
+
 
 }
- 
-void loop(){
 
-  Serial.println("How many degrees?");
+void loop(){
+  
+  Serial.println("What is your command?");
+
+  while(Serial.available() == 0){
+    // do nothing while it waits for something to appear.
+  }
+
+  float arm1_input = Serial.parseFloat();
+  float arm2_input = Serial.parseFloat();
+
+  Serial.end();
+  Serial.begin(9600);
+
+  Serial.println("Please confirm values...");
+  Serial.print("Arm 1: ");
+  Serial.println(arm1_input);
+  Serial.print("Arm 2: ");
+  Serial.println(arm2_input);
+
+  Serial.end();
+  Serial.begin(9600);
+
+  Serial.println("Are those values correct? YES/NO");
 
   while(Serial.available() == 0){
     // do nothing while it waits for something to appear.
   }
   
-  myNumber = Serial.parseInt(); // parses an integer from the serial input. can be replaced with different function to look for commands etc later.r
-  Serial.print("You chose: ");
-  Serial.println(myNumber);
+  String confirmation = Serial.readStringUntil('\n');
 
-  // convert degrees into steps
-  float StepsRequired = (myNumber/360.0)*STEPS_PER_OUT_REV;
-  Serial.print("No. of steps: ");
-  Serial.println(StepsRequired);
+  if (confirmation == "YES"){
+    float arm1_stepsRequired = (arm1_input/360.0)*STEPS_PER_OUT_REV;
+    float arm2_stepsRequired = (arm2_input/360.0)*STEPS_PER_OUT_REV;
+    
+    Serial.print("Stepping arm 1 by ");
+    Serial.println(arm1_stepsRequired);
+    arm1.setSpeed(700); // not sure if 700 is the fastest speed??? just use it because it seems to work.
+    arm1.step(arm1_stepsRequired);
+    Serial.println("Complete");
+    
+    Serial.print("Stepping arm 2 by ");
+    Serial.println(arm2_stepsRequired);
+    arm2.setSpeed(700); // not sure if 700 is the fastest speed??? just use it because it seems to work.
+    arm2.step(arm2_stepsRequired);
+    Serial.println("Complete");
 
-  arm1.setSpeed(700); // not sure if 700 is the fastest speed??? just use it because it seems to work.
-  arm1.step(StepsRequired); 
-  arm2.setSpeed(700); // not sure if 700 is the fastest speed??? just use it because it seems to work.
-  arm2.step(StepsRequired); 
+    arm1_position = arm1_position + arm1_stepsRequired;
+    arm2_position = arm2_position + arm2_stepsRequired;
 
+    Serial.println("Success");
+    
+  } else if (confirmation == "NO"){
+
+    Serial.println("Aborting process...");
+    
+  } else {
+    Serial.println("Invalid input");
+  }
+
+  Serial.println("Status report:");
+  Serial.print("Arm 1 position: ");
+  Serial.print(arm1_position);
+  Serial.println("steps");
+  Serial.print("Arm 2 position: ");
+  Serial.print(arm2_position);
+  Serial.println("steps");
+  
   Serial.end();
   Serial.begin(9600); // Don't ask me why this needs to exist... without it, the program will somehow write a 0 into the input or something and fuck shit up.
                       // this is totally not an ideal solution because... it's goign to break the IO stream and can be problematic?
