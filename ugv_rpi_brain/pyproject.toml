@@ -1,16 +1,18 @@
 [tool.poetry]
+authors = ["robustprogram <robustprogram@gmail.com>"]
+description = ""
 name = "ugv_rpi_brain"
 version = "0.1.0"
-description = ""
-authors = ["robustprogram <robustprogram@gmail.com>"]
 
 [tool.poetry.dependencies]
+Flask-SocketIO = "^5.1.1"
 python = "^3.8"
+python-socketio = "^5.4.1"
 
 [tool.poetry.dev-dependencies]
-pytest = "^5.2"
 black = "^21.10b0"
+pytest = "^5.2"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=1.0.0"]
