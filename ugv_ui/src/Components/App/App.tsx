@@ -1,18 +1,26 @@
 import { Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import React from 'react';
-import { LoadState } from 'src/Shared/types';
+import { LoadState, SocketState } from 'src/Shared/types';
 import './App.scss';
 
 interface AppProps {
-  FormElement: React.ComponentType;
-  SocketStatusElement: React.ComponentType;
+  FormComponent: React.ComponentType;
+  SocketStatusComponent: React.ComponentType;
+  CommandListComponent: React.ComponentType;
   loadState: LoadState;
+  socketState: SocketState;
 }
 const loadIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
-export function App({ FormElement, SocketStatusElement, loadState }: AppProps) {
-  let DisplayElement = <FormElement />;
+export function App({
+  FormComponent,
+  SocketStatusComponent,
+  CommandListComponent,
+  loadState,
+  socketState,
+}: AppProps) {
+  let DisplayElement = <FormComponent />;
 
   if (loadState === LoadState.Loading) {
     DisplayElement = (
@@ -20,13 +28,21 @@ export function App({ FormElement, SocketStatusElement, loadState }: AppProps) {
         <Spin indicator={loadIcon} tip="Connecting to socket" />
       </div>
     );
+  } else if (
+    loadState === LoadState.Loaded &&
+    socketState === SocketState.Connected
+  ) {
+    DisplayElement = <></>;
   }
 
   return (
     <div className="connection-wrapper">
       <div>{DisplayElement}</div>
       <div>
-        <SocketStatusElement />
+        <SocketStatusComponent />
+      </div>
+      <div>
+        <CommandListComponent />
       </div>
     </div>
   );

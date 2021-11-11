@@ -30,4 +30,16 @@ export class SocketManager {
 
     this.socket = socket;
   }
+
+  emitTestRandom() {
+    if (this.socket) {
+      this.socket.emit('test_random');
+    }
+  }
+
+  emitTestRotate() {
+    if (this.socket) {
+      this.socket.emit('test_rotate');
+    }
+  }
 }
