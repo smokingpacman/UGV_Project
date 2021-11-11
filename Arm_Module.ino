@@ -31,19 +31,13 @@ float arm2_position = 0; // keeps track of the number of steps away from origina
 
 void setup(){
   Serial.begin(9600);
-  Serial.println("Initializing...");
-  Serial.println("Testing serial connection");
 }
 
 void loop(){
-  Serial.print("What is your command? ");
-  Serial.println("rotate/reset/status");
-  while(Serial.available() == 0){
-    // do nothing while it waits for something to appear.
-  }
+  Serial.println("What is your command? (rotate/reset/status)");
+  wait_for_input();
   String command = Serial.readStringUntil('\n');
-  Serial.end();
-  Serial.begin(9600);
+  restartSerial();
 
   if(command == "rotate"){
     Serial.println("How many degrees?");
@@ -52,46 +46,42 @@ void loop(){
     }
     float arm1_input = Serial.parseFloat();
     float arm2_input = Serial.parseFloat();
-    Serial.end();
-    Serial.begin(9600);
+    restartSerial();
   
-    Serial.println("Please confirm values...");
-    Serial.print("Arm 1: ");
-    Serial.println(arm1_input);
-    Serial.print("Arm 2: ");
-    Serial.println(arm2_input);
-    Serial.println("Are those values correct? y/n");
-    while(Serial.available() == 0){
-      // do nothing while it waits for something to appear.
-    }
+    Serial.print("Please confirm values...");
+    Serial.print("Arm 1:");
+    Serial.print(arm1_input);
+    Serial.print(" | ");
+    Serial.print("Arm 2:");
+    Serial.print(arm2_input);
+    Serial.println(" Are those values correct? y/n");
+    wait_for_input();
     String confirmation = Serial.readStringUntil('\n');
-    Serial.end();
-    Serial.begin(9600);
+    restartSerial();
 
     if (confirmation == "y"){
       float arm1_stepsRequired = (arm1_input/360.0)*STEPS_PER_OUT_REV;
       float arm2_stepsRequired = (arm2_input/360.0)*STEPS_PER_OUT_REV;
       
       Serial.print("Stepping arm 1 by ");
-      Serial.println(arm1_stepsRequired);
+      Serial.print(arm1_stepsRequired);
       arm1.setSpeed(700); // not sure if 700 is the fastest speed??? just use it because it seems to work.
       arm1.step(arm1_stepsRequired);
-      Serial.println("Complete");
-      
+      Serial.print("...");
+      Serial.print("Complete");
+      Serial.print(" | ");
       Serial.print("Stepping arm 2 by ");
-      Serial.println(arm2_stepsRequired);
+      Serial.print(arm2_stepsRequired);
       arm2.setSpeed(700); // not sure if 700 is the fastest speed??? just use it because it seems to work.
       arm2.step(arm2_stepsRequired);
+      Serial.print("...");
       Serial.println("Complete");
   
       arm1_position = arm1_position + arm1_stepsRequired;
       arm2_position = arm2_position + arm2_stepsRequired;
-  
-      Serial.println("Arms successfully rotated");
-    } else if (confirmation == "n"){
-  
-      Serial.println("Aborting process...");
       
+    } else if (confirmation == "n"){
+      Serial.println("Aborting process...");
     } else {
       Serial.println("Invalid input");
     }
@@ -100,21 +90,20 @@ void loop(){
     float arm2_stepsRequired = arm2_position*-1;
     
     Serial.print("Stepping arm 1 by ");
-    Serial.println(arm1_stepsRequired);
+    Serial.print(arm1_stepsRequired);
     arm1.setSpeed(700); // not sure if 700 is the fastest speed??? just use it because it seems to work.
     arm1.step(arm1_stepsRequired);
-    Serial.println("Complete");
-    
+    Serial.print("|");
     Serial.print("Stepping arm 2 by ");
-    Serial.println(arm2_stepsRequired);
+    Serial.print(arm2_stepsRequired);
     arm2.setSpeed(700); // not sure if 700 is the fastest speed??? just use it because it seems to work.
     arm2.step(arm2_stepsRequired);
+    Serial.print("...");
     Serial.println("Complete");
 
     arm1_position = 0;
     arm2_position = 0;
-
-    Serial.println("Arms reset to initial position");
+    
   } else if(command == "status"){
     Serial.println("Status report:");
     Serial.print("Arm 1 position: ");
@@ -126,7 +115,18 @@ void loop(){
     Serial.println();
   }
   
-  Serial.end();
-  Serial.begin(9600); // Don't ask me why this needs to exist... without it, the program will somehow write a 0 into the input or something and fuck shit up.
+  restartSerial(); // Don't ask me why this needs to exist... without it, the program will somehow write a 0 into the input or something and fuck shit up.
                       // this is totally not an ideal solution because... it's goign to break the IO stream and can be problematic?
 }
+
+void wait_for_input(){
+  while(Serial.available() == 0){
+    // do nothing while it waits for something to appear.
+  }
+}
+
+void restartSerial(){
+  Serial.end();
+  Serial.begin(9600);
+}
+
