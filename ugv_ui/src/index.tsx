@@ -1,12 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import { createApp } from './Components/App/create';
 import reportWebVitals from './reportWebVitals';
 import 'antd/dist/antd.css';
 
+const { AppElement } = createApp();
+
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <AppElement />
   </React.StrictMode>,
   document.getElementById('root')
 );

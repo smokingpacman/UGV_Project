@@ -23,7 +23,12 @@ module.exports = {
     // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     'import/no-anonymous-default-export': 'off',
-    'prettier/prettier': 'error',
+    'prettier/prettier': [
+      'error',
+      {
+        'endOfLine': 'auto',
+      }
+    ],
     'no-underscore-dangle': 'warn',
   },
 };
