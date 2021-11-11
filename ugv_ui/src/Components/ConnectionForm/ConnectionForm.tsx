@@ -2,9 +2,7 @@ import { WifiOutlined } from '@ant-design/icons';
 import { Form, Input, Button } from 'antd';
 import React from 'react';
 
-function App() {
-  const [socketUrl, setSocketUrl] = React.useState<string>();
-
+export function ConnectionForm() {
   const onFinish = (values: any) => {
     console.log('Received values of form: ', values);
   };
@@ -35,5 +33,3 @@ function App() {
     </Form>
   );
 }
-
-export default App;

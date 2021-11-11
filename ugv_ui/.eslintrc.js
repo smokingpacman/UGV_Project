@@ -21,7 +21,7 @@ module.exports = {
   plugins: ['prettier'],
   rules: {
     // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
-    // e.g. "@typescript-eslint/explicit-function-return-type": "off",
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
     'import/no-anonymous-default-export': 'off',
     'prettier/prettier': 'error',
     'no-underscore-dangle': 'warn',
