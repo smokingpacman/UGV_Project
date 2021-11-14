@@ -6,7 +6,7 @@ def test_movement():
     ser.flush()
 
     while True:
-        if ser.in_waiting > 0:
+        if True:
             line = ser.readline().decode("utf-8").rstrip()
 
             if line == "request":
