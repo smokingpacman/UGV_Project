@@ -1,24 +1,10 @@
-import serial
-import time
+from . import serial_connection
 
 
 def test_movement():
-    ser = serial.Serial("/dev/ttyACM0", 9600)
-    ser.flush()
-
-    while True:
-        if ser.in_waiting > 0:
-            line = ser.readline().decode("utf-8").rstrip()
-
-            if line == "request":
-                ser.write(str("rotate").encode("utf-8"))
-                ser.write(str(",").encode("utf-8"))
-                ser.write(str("180").encode("utf-8"))
-                ser.write(str(",").encode("utf-8"))
-                ser.write(str("360").encode("utf-8"))
-                ser.write(str("\n").encode("utf-8"))
-                time.sleep(5)
-                ser.close()
-            else:
-                print(line)
-                break
+    serial_connection.write(str("rotate").encode("utf-8"))
+    serial_connection.write(str(",").encode("utf-8"))
+    serial_connection.write(str("180").encode("utf-8"))
+    serial_connection.write(str(",").encode("utf-8"))
+    serial_connection.write(str("360").encode("utf-8"))
+    serial_connection.write(str("\n").encode("utf-8"))
