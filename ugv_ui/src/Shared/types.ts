@@ -5,6 +5,7 @@ export enum LoadState {
 
 export enum SocketState {
   Connected = 'Connected',
+  Connecting = 'Connecting',
   NotConnected = 'NotConnected',
   ConnectionError = 'ConnectionError',
 }

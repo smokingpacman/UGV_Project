@@ -3,6 +3,7 @@ import * as mobxReact from 'mobx-react-lite';
 import * as React from 'react';
 import { CommandList } from 'src/Components/CommandList/CommandList';
 import { createConnectionForm } from 'src/Components/ConnectionForm/create';
+import { createConnectionModal } from 'src/Components/ConnectionModal/create';
 import { SocketStatus } from 'src/Components/SocketStatus/SocketStatus';
 import { LoadState, SocketState } from 'src/Shared/types';
 import { SocketManager } from 'src/Socket/SocketManager';
@@ -13,27 +14,35 @@ export function createApp() {
   const appState = new AppState();
   const socketManager = new SocketManager();
   const { ConnectionFormElement, connectionFormState } = createConnectionForm();
+  const SocketStatusElement = mobxReact.observer(() => (
+    <SocketStatus socketState={socketManager.connectionState} />
+  ));
+  const { ConnectionModalElement, connectionModalState } =
+    createConnectionModal({
+      ConnectionFormElement,
+      SocketStatusElement,
+    });
 
   const formSubmitReaction = mobx.autorun(() => {
     if (
       connectionFormState.socketUrl &&
       connectionFormState.socketUrl.length > 0
     ) {
-      appState.loadingState = LoadState.Loading;
+      connectionModalState.loadState = LoadState.Loading;
       socketManager.startConnection(connectionFormState.socketUrl);
     }
   });
 
   const socketReaction = mobx.autorun(() => {
     if (socketManager.connectionState === SocketState.ConnectionError) {
-      appState.loadingState = LoadState.Loaded;
+      connectionModalState.loadState = LoadState.Loaded;
+      connectionModalState.isModalVisible = true;
       connectionFormState.socketUrl = '';
+    } else if (socketManager.connectionState === SocketState.Connected) {
+      appState.loadingState = LoadState.Loaded;
+      connectionModalState.isModalVisible = false;
     }
   });
-
-  const SocketStatusElement = mobxReact.observer(() => (
-    <SocketStatus socketState={socketManager.connectionState} />
-  ));
 
   const CommandListElement = mobxReact.observer(() => (
     <CommandList
@@ -65,10 +74,9 @@ export function createApp() {
 
       return (
         <App
-          FormComponent={ConnectionFormElement}
+          FormComponent={ConnectionModalElement}
           SocketStatusComponent={SocketStatusElement}
           CommandListComponent={CommandListElement}
-          loadState={appState.loadingState}
           socketState={socketManager.connectionState}
         />
       );

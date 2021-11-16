@@ -28,5 +28,17 @@ def test_disconnect():
     print("Client disconnected")
 
 
+@socketio.on("rotate")
+def rotate(data):
+    print("BLAHFASOKFLSJDLK:F:")
+    print(data)
+    print(str(data))
+
+
+@socketio.on("command_line")
+def command_line(data):
+    print(data)
+
+
 if __name__ == "__main__":
     socketio.run(app, host="0.0.0.0", port=5000)

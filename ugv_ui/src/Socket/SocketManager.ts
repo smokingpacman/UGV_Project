@@ -15,6 +15,7 @@ export class SocketManager {
 
   startConnection(socketUrl: string) {
     const socket = io(socketUrl);
+    this.connectionState = SocketState.Connecting;
 
     socket.on('connect', () => {
       this.connectionState = SocketState.Connected;
