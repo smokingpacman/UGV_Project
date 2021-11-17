@@ -19,9 +19,14 @@ export function createApp() {
 
   /* =============== Components =============== */
   const { ConnectionFormElement, connectionFormState } = createConnectionForm();
-  const InfoStatusListElement = mobxReact.observer(() => (
-    <InfoStatusList messages={[...socketMessageChannel.messages]} />
-  ));
+  const InfoStatusListElement = mobxReact.observer(() =>
+    // This is to ensure messages is observed.
+    socketMessageChannel.messages.length ? (
+      <InfoStatusList messages={socketMessageChannel.messages} />
+    ) : (
+      <InfoStatusList messages={[]} />
+    )
+  );
   const SocketStatusElement = mobxReact.observer(() => (
     <SocketStatus socketState={socketManager.connectionState} />
   ));

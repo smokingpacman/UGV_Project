@@ -12,7 +12,7 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 def test_connect(auth):
     emit(
         "info_channel",
-        {"level": 0, "message": "Client connected"},
+        {"severityLevel": 0, "message": "Client connected"},
     )
     print("Client connected")
 
