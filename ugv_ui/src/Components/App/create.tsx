@@ -4,16 +4,24 @@ import * as React from 'react';
 import { CommandList } from 'src/Components/CommandList/CommandList';
 import { createConnectionForm } from 'src/Components/ConnectionForm/create';
 import { createConnectionModal } from 'src/Components/ConnectionModal/create';
+import { InfoStatusList } from 'src/Components/InfoStatus/InfoStatusList';
 import { SocketStatus } from 'src/Components/SocketStatus/SocketStatus';
 import { LoadState, SocketState } from 'src/Shared/types';
 import { SocketManager } from 'src/Socket/SocketManager';
+import { SocketMessageChannel } from 'src/Socket/SocketMessageChannel';
 import { App } from './App';
 import { AppState } from './AppState';
 
 export function createApp() {
   const appState = new AppState();
   const socketManager = new SocketManager();
+  const socketMessageChannel = new SocketMessageChannel(socketManager);
+
+  /* =============== Components =============== */
   const { ConnectionFormElement, connectionFormState } = createConnectionForm();
+  const InfoStatusListElement = mobxReact.observer(() => (
+    <InfoStatusList messages={[...socketMessageChannel.messages]} />
+  ));
   const SocketStatusElement = mobxReact.observer(() => (
     <SocketStatus socketState={socketManager.connectionState} />
   ));
@@ -22,7 +30,14 @@ export function createApp() {
       ConnectionFormElement,
       SocketStatusElement,
     });
+  const CommandListElement = mobxReact.observer(() => (
+    <CommandList
+      isDisabled={socketManager.connectionState !== SocketState.Connected}
+      onClickCommandLine={() => socketManager.emitTestCommand()}
+    />
+  ));
 
+  /* =============== Reactions =============== */
   const formSubmitReaction = mobx.autorun(() => {
     if (
       connectionFormState.socketUrl &&
@@ -44,15 +59,7 @@ export function createApp() {
     }
   });
 
-  const CommandListElement = mobxReact.observer(() => (
-    <CommandList
-      isDisabled={socketManager.connectionState !== SocketState.Connected}
-      onClickCommandLine={socketManager.emitTestCommand}
-      onClickRandom={socketManager.emitTestRandom}
-      onClickRotate={socketManager.emitTestRotate}
-    />
-  ));
-
+  /* =============== Clean up =============== */
   function cleanUpAppReactions() {
     console.log('Cleaning up');
     formSubmitReaction();
@@ -67,10 +74,10 @@ export function createApp() {
 
       return (
         <App
-          FormComponent={ConnectionModalElement}
+          ConnectionModalComponent={ConnectionModalElement}
           SocketStatusComponent={SocketStatusElement}
+          InformationChannelComponent={InfoStatusListElement}
           CommandListComponent={CommandListElement}
-          socketState={socketManager.connectionState}
         />
       );
     }),

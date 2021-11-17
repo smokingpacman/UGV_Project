@@ -4,9 +4,9 @@ import './CommandList.scss';
 
 interface CommandListProps {
   isDisabled: boolean;
-  onClickCommandLine: () => void;
-  onClickRandom: () => void;
-  onClickRotate: () => void;
+  onClickCommandLine?: () => void;
+  onClickRandom?: () => void;
+  onClickRotate?: () => void;
 }
 
 export function CommandList({
@@ -21,15 +21,21 @@ export function CommandList({
   };
   return (
     <div className="command-list">
-      <Button {...commonProps} onClick={onClickRandom} type="primary">
-        Test Random
-      </Button>
-      <Button {...commonProps} onClick={onClickRotate} type="primary">
-        Test Rotate
-      </Button>
-      <Button {...commonProps} onClick={onClickCommandLine} type="primary">
-        Test Command Line
-      </Button>
+      {onClickRandom && (
+        <Button {...commonProps} onClick={onClickRandom} type="primary">
+          Test Random
+        </Button>
+      )}
+      {onClickRotate && (
+        <Button {...commonProps} onClick={onClickRotate} type="primary">
+          Test Rotate
+        </Button>
+      )}
+      {onClickCommandLine && (
+        <Button {...commonProps} onClick={onClickCommandLine} type="primary">
+          Test Command Line
+        </Button>
+      )}
     </div>
   );
 }

@@ -10,6 +10,10 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 
 @socketio.on("connect")
 def test_connect(auth):
+    emit(
+        "info_channel",
+        {"level": 0, "message": "Client connected"},
+    )
     print("Client connected")
 
 
@@ -37,14 +41,21 @@ def rotate(data):
 
 
 @socketio.on("command_line")
-def command_line(data):
-    if not isinstance(data, str):
+def command_line(command):
+    if not isinstance(command, str):
         emit(
             "info_channel",
-            {"level": 50, "message": "Command line must be received as a string"},
+            {
+                "severityLevel": 50,
+                "message": "Command line must be received as a string",
+            },
         )
         return
-    print(data)
+    print(command)
+    emit(
+        "info_channel",
+        {"severityLevel": 0, "message": "Received command!"},
+    )
 
 
 if __name__ == "__main__":

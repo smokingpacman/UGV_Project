@@ -24,3 +24,8 @@ export enum SeverityLevel {
   ERROR = 50,
   CRITICAL_ERROR = 75,
 }
+
+export interface SocketMessage {
+  message: string;
+  severityLevel: SeverityLevel;
+}

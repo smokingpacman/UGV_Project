@@ -10,6 +10,7 @@ export class SocketManager {
   constructor() {
     mobx.makeObservable(this, {
       connectionState: mobx.observable,
+      socket: mobx.observable,
     });
   }
 
@@ -46,7 +47,7 @@ export class SocketManager {
 
   emitTestCommand() {
     if (this.socket) {
-      this.socket.emit('command_line', { command: 'test' });
+      this.socket.emit('command_line', 'test_command');
     }
   }
 }
