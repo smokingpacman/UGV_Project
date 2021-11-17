@@ -2,12 +2,13 @@ import { Button, Space } from 'antd';
 import * as mobx from 'mobx';
 import * as mobxReact from 'mobx-react-lite';
 import * as React from 'react';
-import { CommandList } from 'src/Components/CommandList/CommandList';
+import { createCommandLine } from 'src/Components/CommandLine/create';
 import { createConnectionForm } from 'src/Components/ConnectionForm/create';
 import { createConnectionModal } from 'src/Components/ConnectionModal/create';
 import { InfoStatusList } from 'src/Components/InfoStatus/InfoStatusList';
 import { SocketStatus } from 'src/Components/SocketStatus/SocketStatus';
 import { SocketState } from 'src/Shared/types';
+import { sendCommand } from 'src/Socket/SocketEmits';
 import { SocketManager } from 'src/Socket/SocketManager';
 import { SocketMessageChannel } from 'src/Socket/SocketMessageChannel';
 import { App } from './App';
@@ -50,12 +51,11 @@ export function createApp() {
       ConnectionFormElement,
       SocketStatusElement,
     });
-  const CommandListElement = mobxReact.observer(() => (
-    <CommandList
-      isDisabled={socketManager.connectionState !== SocketState.Connected}
-      onClickCommandLine={() => socketManager.emitTestCommand()}
-    />
-  ));
+  const { CommandLineElement, commandLineState } = createCommandLine({
+    onSend: (command) => {
+      socketManager.socket && sendCommand(socketManager.socket, command);
+    },
+  });
 
   /* =============== Actions =============== */
   function toggleResetConnection() {
@@ -75,6 +75,9 @@ export function createApp() {
   });
 
   const socketReaction = mobx.autorun(() => {
+    commandLineState.setIsDisabled(
+      socketManager.connectionState !== SocketState.Connected
+    );
     if (socketManager.connectionState === SocketState.ConnectionError) {
       resetConnection(connectionModalState, connectionFormState);
     } else if (socketManager.connectionState === SocketState.Connected) {
@@ -100,7 +103,7 @@ export function createApp() {
           ConnectionModalComponent={ConnectionModalElement}
           SocketStatusComponent={SocketStatusElement}
           InformationChannelComponent={InfoStatusListElement}
-          CommandComponent={CommandListElement}
+          CommandComponent={CommandLineElement}
         />
       );
     }),

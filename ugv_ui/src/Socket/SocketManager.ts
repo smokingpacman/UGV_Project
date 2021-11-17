@@ -36,22 +36,4 @@ export class SocketManager {
   closeConnection() {
     if (this.socket) this.socket.close();
   }
-
-  emitTestRandom() {
-    if (this.socket) {
-      this.socket.emit('test_random');
-    }
-  }
-
-  emitTestRotate() {
-    if (this.socket) {
-      this.socket.emit('test_rotate');
-    }
-  }
-
-  emitTestCommand() {
-    if (this.socket) {
-      this.socket.emit('command_line', 'test_command');
-    }
-  }
 }
