@@ -1,3 +1,4 @@
+import { Button, Space } from 'antd';
 import * as mobx from 'mobx';
 import * as mobxReact from 'mobx-react-lite';
 import * as React from 'react';
@@ -6,14 +7,17 @@ import { createConnectionForm } from 'src/Components/ConnectionForm/create';
 import { createConnectionModal } from 'src/Components/ConnectionModal/create';
 import { InfoStatusList } from 'src/Components/InfoStatus/InfoStatusList';
 import { SocketStatus } from 'src/Components/SocketStatus/SocketStatus';
-import { LoadState, SocketState } from 'src/Shared/types';
+import { SocketState } from 'src/Shared/types';
 import { SocketManager } from 'src/Socket/SocketManager';
 import { SocketMessageChannel } from 'src/Socket/SocketMessageChannel';
 import { App } from './App';
-import { AppState } from './AppState';
+import {
+  startConnection,
+  handleConnectionSuccess,
+  resetConnection,
+} from './AppActions';
 
 export function createApp() {
-  const appState = new AppState();
   const socketManager = new SocketManager();
   const socketMessageChannel = new SocketMessageChannel(socketManager);
 
@@ -28,7 +32,18 @@ export function createApp() {
     )
   );
   const SocketStatusElement = mobxReact.observer(() => (
-    <SocketStatus socketState={socketManager.connectionState} />
+    <SocketStatus
+      socketState={socketManager.connectionState}
+      action={
+        socketManager.connectionState === SocketState.Connected ? (
+          <Space>
+            <Button size="small" type="ghost" onClick={toggleResetConnection}>
+              Close Connection
+            </Button>
+          </Space>
+        ) : null
+      }
+    />
   ));
   const { ConnectionModalElement, connectionModalState } =
     createConnectionModal({
@@ -42,25 +57,28 @@ export function createApp() {
     />
   ));
 
+  /* =============== Actions =============== */
+  function toggleResetConnection() {
+    socketManager.closeConnection();
+    resetConnection(connectionModalState, connectionFormState);
+  }
+
   /* =============== Reactions =============== */
   const formSubmitReaction = mobx.autorun(() => {
     if (
       connectionFormState.socketUrl &&
       connectionFormState.socketUrl.length > 0
     ) {
-      connectionModalState.loadState = LoadState.Loading;
+      startConnection(connectionModalState);
       socketManager.startConnection(connectionFormState.socketUrl);
     }
   });
 
   const socketReaction = mobx.autorun(() => {
     if (socketManager.connectionState === SocketState.ConnectionError) {
-      connectionModalState.loadState = LoadState.Loaded;
-      connectionModalState.isModalVisible = true;
-      connectionFormState.socketUrl = '';
+      resetConnection(connectionModalState, connectionFormState);
     } else if (socketManager.connectionState === SocketState.Connected) {
-      appState.loadingState = LoadState.Loaded;
-      connectionModalState.isModalVisible = false;
+      handleConnectionSuccess(connectionModalState);
     }
   });
 
@@ -86,6 +104,5 @@ export function createApp() {
         />
       );
     }),
-    appState,
   };
 }

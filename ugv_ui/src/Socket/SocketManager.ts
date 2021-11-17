@@ -33,6 +33,10 @@ export class SocketManager {
     this.socket = socket;
   }
 
+  closeConnection() {
+    if (this.socket) this.socket.close();
+  }
+
   emitTestRandom() {
     if (this.socket) {
       this.socket.emit('test_random');
