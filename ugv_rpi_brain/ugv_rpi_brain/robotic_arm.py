@@ -1,13 +1,21 @@
-from . import serial_connection
+from flask_socketio import SocketIO, emit
+from . import serial_connection, open_serial_connection
 
 
-def test_movement():
-    serial_connection.write("rotate,180,360\n".encode("utf-8"))
+def run_command(command):
+    with open_serial_connection():
+        serial_connection.write(str(command).encode("utf-8"))
 
+        while True:
+            # in_waiting finds the amount of bits in the input buffer. it should be 0 if nothing was sent.
+            if serial_connection.in_waiting > 0:
+                line = serial_connection.readline().decode("utf-8").rstrip()
 
-def rotate_arm(left_arm, right_arm):
-    serial_connection.write(f"rotate,{left_arm},{right_arm}\n".encode("utf-8"))
+                if line == "request":
+                    # The arduino is ready for another command. Break out of loop
+                    break
 
-
-def command_line(command):
-    serial_connection.write(str(command).encode("utf-8"))
+                emit(
+                    "info_channel",
+                    {"severityLevel": 10, "message": line},
+                )

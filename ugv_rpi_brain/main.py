@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_socketio import SocketIO, emit
 
-# from ugv_rpi_brain import robotic_arm
+from ugv_rpi_brain import robotic_arm
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "the-hat"
@@ -12,32 +12,18 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 def test_connect(auth):
     emit(
         "info_channel",
-        {"severityLevel": 0, "message": "Client connected"},
+        {"severityLevel": 10, "message": "Client connected"},
     )
     print("Client connected")
 
 
-@socketio.on("test_rotate")
-def test_rotate():
-    print("Rotating")
-    # robotic_arm.test_movement()
-
-
-@socketio.on("test_random")
-def test_random():
-    print("Ni howdy")
-
-
 @socketio.on("disconnect")
 def test_disconnect():
+    emit(
+        "info_channel",
+        {"severityLevel": 10, "message": "Client disconnected"},
+    )
     print("Client disconnected")
-
-
-@socketio.on("rotate")
-def rotate(data):
-    print("BLAHFASOKFLSJDLK:F:")
-    print(data)
-    print(str(data))
 
 
 @socketio.on("command_line")
@@ -51,11 +37,11 @@ def command_line(command):
             },
         )
         return
-    print(command)
     emit(
         "info_channel",
         {"severityLevel": 0, "message": "Received command!"},
     )
+    robotic_arm.run_command(command)
 
 
 if __name__ == "__main__":
