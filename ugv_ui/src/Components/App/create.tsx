@@ -77,7 +77,7 @@ export function createApp() {
           ConnectionModalComponent={ConnectionModalElement}
           SocketStatusComponent={SocketStatusElement}
           InformationChannelComponent={InfoStatusListElement}
-          CommandListComponent={CommandListElement}
+          CommandComponent={CommandListElement}
         />
       );
     }),

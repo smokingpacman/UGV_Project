@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { createApp } from './Components/App/create';
 import reportWebVitals from './reportWebVitals';
 import 'antd/dist/antd.css';
+import './index.scss';
 
 const { AppElement } = createApp();
 
