@@ -1,6 +1,9 @@
+import { Layout } from 'antd';
 import React from 'react';
 import { SocketState } from 'src/Shared/types';
 import './App.scss';
+
+const { Content } = Layout;
 
 interface AppProps {
   FormComponent: React.ComponentType;
@@ -22,14 +25,23 @@ export function App({
   }
 
   return (
-    <div className="connection-wrapper">
-      <div>{DisplayElement}</div>
-      <div>
+    <Layout className="site-layout">
+      <div className="status-wrapper">
         <SocketStatusComponent />
       </div>
-      <div>
-        <CommandListComponent />
-      </div>
-    </div>
+      <Content style={{ margin: '0 16px' }}>
+        <div
+          className="site-layout-background"
+          style={{ padding: 24, minHeight: 360 }}
+        >
+          <div className="connection-wrapper">
+            <div>{DisplayElement}</div>
+            <div>
+              <CommandListComponent />
+            </div>
+          </div>
+        </div>
+      </Content>
+    </Layout>
   );
 }

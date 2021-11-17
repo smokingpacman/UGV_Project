@@ -4,12 +4,14 @@ import './CommandList.scss';
 
 interface CommandListProps {
   isDisabled: boolean;
+  onClickCommandLine: () => void;
   onClickRandom: () => void;
   onClickRotate: () => void;
 }
 
 export function CommandList({
   isDisabled,
+  onClickCommandLine,
   onClickRandom,
   onClickRotate,
 }: CommandListProps) {
@@ -24,6 +26,9 @@ export function CommandList({
       </Button>
       <Button {...commonProps} onClick={onClickRotate} type="primary">
         Test Rotate
+      </Button>
+      <Button {...commonProps} onClick={onClickCommandLine} type="primary">
+        Test Command Line
       </Button>
     </div>
   );

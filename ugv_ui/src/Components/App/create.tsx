@@ -47,18 +47,11 @@ export function createApp() {
   const CommandListElement = mobxReact.observer(() => (
     <CommandList
       isDisabled={socketManager.connectionState !== SocketState.Connected}
-      onClickRandom={onClickRandom}
-      onClickRotate={onClickRotate}
+      onClickCommandLine={socketManager.emitTestCommand}
+      onClickRandom={socketManager.emitTestRandom}
+      onClickRotate={socketManager.emitTestRotate}
     />
   ));
-
-  function onClickRandom() {
-    socketManager.emitTestRandom();
-  }
-
-  function onClickRotate() {
-    socketManager.emitTestRotate();
-  }
 
   function cleanUpAppReactions() {
     console.log('Cleaning up');

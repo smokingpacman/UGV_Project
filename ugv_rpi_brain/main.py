@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_socketio import SocketIO, emit
-from ugv_rpi_brain import robotic_arm
+
+# from ugv_rpi_brain import robotic_arm
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "the-hat"
@@ -15,7 +16,7 @@ def test_connect(auth):
 @socketio.on("test_rotate")
 def test_rotate():
     print("Rotating")
-    robotic_arm.test_movement()
+    # robotic_arm.test_movement()
 
 
 @socketio.on("test_random")
@@ -37,8 +38,14 @@ def rotate(data):
 
 @socketio.on("command_line")
 def command_line(data):
+    if not isinstance(data, str):
+        emit(
+            "info_channel",
+            {"level": 50, "message": "Command line must be received as a string"},
+        )
+        return
     print(data)
 
 
 if __name__ == "__main__":
-    socketio.run(app, host="0.0.0.0", port=5000)
+    socketio.run(app)

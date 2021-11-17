@@ -43,4 +43,10 @@ export class SocketManager {
       this.socket.emit('test_rotate');
     }
   }
+
+  emitTestCommand() {
+    if (this.socket) {
+      this.socket.emit('command_line', { command: 'test' });
+    }
+  }
 }
