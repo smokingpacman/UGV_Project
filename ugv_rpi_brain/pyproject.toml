@@ -12,6 +12,7 @@ pyserial = "^3.5"
 [tool.poetry.dev-dependencies]
 black = "^21.10b0"
 pytest = "^5.2"
+pytest-mock = "^3.6.1"
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
