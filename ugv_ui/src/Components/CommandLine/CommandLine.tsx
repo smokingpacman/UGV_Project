@@ -1,7 +1,7 @@
 import { Button, Input } from 'antd';
 import * as mobx from 'mobx';
 import * as React from 'react';
-import './CommandLine.scss';
+import styles from './CommandLine.module.css';
 
 export class CommandLineState {
   command = '';
@@ -34,14 +34,14 @@ export function CommandLine({
   onSend,
 }: CommandLineProps) {
   return (
-    <div className="command-line">
+    <div className={styles.commandLine}>
       <Input
         placeholder="Command line"
         value={command}
         disabled={isDisabled}
         onChange={onChangeValue}
       />
-      <div className="spacer" />
+      <div className={styles.commandLineSpacer} />
       <Button disabled={isDisabled} onClick={onSend}>
         Send
       </Button>

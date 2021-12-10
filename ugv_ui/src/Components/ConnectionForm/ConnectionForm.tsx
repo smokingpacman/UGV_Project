@@ -1,7 +1,7 @@
 import { WifiOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Typography } from 'antd';
 import React from 'react';
-import './ConnectionForm.scss';
+import styles from './ConnectionForm.module.css';
 
 interface ConnectionFormProps {
   saveSocketUrl(socketUrl: string): void;
@@ -21,7 +21,6 @@ export function ConnectionForm({ saveSocketUrl }: ConnectionFormProps) {
   return (
     <Form
       name="normal_login"
-      className="connection-form"
       initialValues={{ remember: true }}
       onFinish={onFinish}
     >
@@ -38,11 +37,7 @@ export function ConnectionForm({ saveSocketUrl }: ConnectionFormProps) {
       </Form.Item>
 
       <Form.Item>
-        <Button
-          type="primary"
-          htmlType="submit"
-          className="connection-form-button"
-        >
+        <Button type="primary" htmlType="submit" className={styles.button}>
           Connect
         </Button>
       </Form.Item>

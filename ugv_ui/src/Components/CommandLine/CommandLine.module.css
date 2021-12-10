@@ -1,11 +1,11 @@
-.command-line {
+.commandLine {
   border: 2px solid #EEEEEE;
   margin-top: 1rem;
   padding: 0.25rem;
 
   display: flex;
+}
 
-  & .spacer {
-    margin: 0.125rem;
-  }
+.commandLineSpacer {
+  margin: 0.125rem;
 }

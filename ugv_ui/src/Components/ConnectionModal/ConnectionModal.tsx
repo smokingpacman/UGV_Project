@@ -2,7 +2,7 @@ import { Modal, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import React from 'react';
 import { LoadState } from 'src/Shared/types';
-import './ConnectionModal.scss';
+import styles from './ConnectionModal.module.css';
 
 const loadIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
@@ -31,7 +31,7 @@ export function ConnectionModal({
       {loadState === LoadState.Loaded ? (
         <ConnectionFormElement />
       ) : (
-        <div className="spinner">
+        <div className={styles.spinner}>
           <Spin indicator={loadIcon} tip="Connecting to socket" />
         </div>
       )}

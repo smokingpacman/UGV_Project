@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.scss';
+import styles from './App.module.css';
 
 interface AppProps {
   ConnectionModalComponent: React.ComponentType;
@@ -17,15 +17,15 @@ export function App({
   return (
     <>
       <ConnectionModalComponent />
-      <div className="layout-wrapper">
-        <div className="status-wrapper">
+      <div className={styles.layoutWrapper}>
+        <div className={styles.statusWrapper}>
           <SocketStatusComponent />
         </div>
-        <div className="content">
-          <div className="information-channel">
+        <div className={styles.content}>
+          <div>
             <InformationChannelComponent />
           </div>
-          <div className="command-area">
+          <div>
             <CommandComponent />
           </div>
         </div>
