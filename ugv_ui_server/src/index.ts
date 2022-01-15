@@ -1,6 +1,7 @@
 import express from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
+import { addChannelRegisterAsUi, initialJoin } from 'src/register';
 
 const app = express();
 const httpServer = createServer(app);
@@ -11,8 +12,9 @@ const io = new Server(httpServer, {
 });
 const port = 8000;
 
-io.on('connection', () => {
-  console.log('Connection confirmed');
+io.on('connection', (socket) => {
+  initialJoin(socket);
+  addChannelRegisterAsUi(socket);
 });
 
 httpServer.listen(port, () => {
