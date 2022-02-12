@@ -6,6 +6,7 @@ import {
   addChannelRegisterAsUI,
   addInitialJoinEvent,
 } from 'src/register';
+import { addChannelRPIInfo } from 'src/rpi_sockets/register';
 import { addChannelSendCommand } from 'src/ui_sockets/register';
 
 const app = express();
@@ -20,7 +21,7 @@ const port = 8000;
 io.on('connection', (socket) => {
   addInitialJoinEvent(socket);
   addChannelRegisterAsRPI(socket, () => {
-    // Do nothing yet
+    addChannelRPIInfo(socket);
   });
   addChannelRegisterAsUI(socket, () => {
     addChannelSendCommand(socket);
