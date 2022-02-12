@@ -10,7 +10,7 @@ import { SocketMessage, SocketType, SeverityLevel } from 'src/shared/types';
 
 export const SocketRegister: Record<string, string> = {};
 
-export function initialJoin(socket: Socket) {
+export function addInitialJoinEvent(socket: Socket) {
   SocketRegister[socket.id] = SocketType.UNKNOWN;
   socket.emit('info_channel', {
     message: 'Formed connection with UI server',
@@ -18,26 +18,31 @@ export function initialJoin(socket: Socket) {
   } as SocketMessage);
 }
 
-export function addChannelRegisterAsUi(socket: Socket) {
-  socket.on('register_ui', () => {
-    if (!(socket.id in SocketRegister)) {
-      socket.emit('info_channel', {
-        message: 'You were unable to be registered by the server!',
-        severityLevel: SeverityLevel.ERROR,
-      } as SocketMessage);
-      return;
-    }
+const registerChannel =
+  (type: SocketType) => (socket: Socket, onRegister: () => void) => {
+    socket.on('register_ui', () => {
+      if (!(socket.id in SocketRegister)) {
+        socket.emit('info_channel', {
+          message: 'You were unable to be registered by the server!',
+          severityLevel: SeverityLevel.ERROR,
+        } as SocketMessage);
+        return;
+      }
 
-    const socketType = SocketRegister[socket.id];
+      const socketType = SocketRegister[socket.id];
 
-    if (socketType !== SocketType.UNKNOWN) {
-      socket.emit('info_channel', {
-        message: `You are already registered as a ${socketType}!`,
-        severityLevel: SeverityLevel.ERROR,
-      } as SocketMessage);
-      return;
-    }
+      if (socketType !== SocketType.UNKNOWN) {
+        socket.emit('info_channel', {
+          message: `You are already registered as a ${socketType}!`,
+          severityLevel: SeverityLevel.ERROR,
+        } as SocketMessage);
+        return;
+      }
 
-    SocketRegister[socket.id] = SocketType.UI;
-  });
-}
+      SocketRegister[socket.id] = type;
+      onRegister();
+    });
+  };
+
+export const addChannelRegisterAsRPI = registerChannel(SocketType.RASPBERRY_PI);
+export const addChannelRegisterAsUI = registerChannel(SocketType.UI);
