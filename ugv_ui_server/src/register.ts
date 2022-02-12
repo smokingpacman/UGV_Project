@@ -10,12 +10,18 @@ import { SocketMessage, SocketType, SeverityLevel } from 'src/shared/types';
 
 export const SocketRegister: Record<string, string> = {};
 
-export function addInitialJoinEvent(socket: Socket) {
+export function onJoinEvent(socket: Socket) {
   SocketRegister[socket.id] = SocketType.UNKNOWN;
   socket.emit('info_channel', {
     message: 'Formed connection with UI server',
     severityLevel: SeverityLevel.INFO,
   } as SocketMessage);
+}
+
+export function onLeaveEvent(socket: Socket) {
+  if (socket.id in SocketRegister) {
+    delete SocketRegister[socket.id];
+  }
 }
 
 const registerChannel =

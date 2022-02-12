@@ -4,7 +4,8 @@ import { Server } from 'socket.io';
 import {
   addChannelRegisterAsRPI,
   addChannelRegisterAsUI,
-  addInitialJoinEvent,
+  onLeaveEvent,
+  onJoinEvent,
 } from 'src/register';
 import { addChannelRPIInfo } from 'src/rpi_sockets/register';
 import { addChannelSendCommand } from 'src/ui_sockets/register';
@@ -19,13 +20,17 @@ const io = new Server(httpServer, {
 const port = 8000;
 
 io.on('connection', (socket) => {
-  addInitialJoinEvent(socket);
+  onJoinEvent(socket);
   addChannelRegisterAsRPI(socket, () => {
     addChannelRPIInfo(socket);
   });
   addChannelRegisterAsUI(socket, () => {
     addChannelSendCommand(socket);
   });
+});
+
+io.on('disonnection', (socket) => {
+  onLeaveEvent(socket);
 });
 
 httpServer.listen(port, () => {
