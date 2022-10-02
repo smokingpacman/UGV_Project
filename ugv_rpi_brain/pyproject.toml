@@ -5,9 +5,9 @@ name = "ugv_rpi_brain"
 version = "0.1.0"
 
 [tool.poetry.dependencies]
-Flask-SocketIO = "^5.1.1"
 python = "^3.8"
 pyserial = "^3.5"
+python-socketio = {extras = ["client"], version = "^5.5.1"}
 
 [tool.poetry.dev-dependencies]
 black = "^21.10b0"

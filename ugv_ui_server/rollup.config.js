@@ -1,4 +1,3 @@
-import eslint from '@rollup/plugin-eslint';
 import { terser } from 'rollup-plugin-terser';
 import typescript from '@rollup/plugin-typescript';
 import run from '@rollup/plugin-run';
@@ -11,10 +10,5 @@ export default {
     dir: isProduction ? 'dist' : 'dev',
     format: 'cjs',
   },
-  plugins: [
-    eslint(),
-    typescript(),
-    isProduction && terser(),
-    !isProduction && run(),
-  ],
+  plugins: [typescript(), isProduction && terser(), !isProduction && run()],
 };

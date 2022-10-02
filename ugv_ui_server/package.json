@@ -5,7 +5,6 @@
   "author": "robustprogram",
   "license": "MIT",
   "devDependencies": {
-    "@rollup/plugin-eslint": "^8.0.1",
     "@rollup/plugin-run": "^2.1.0",
     "@rollup/plugin-typescript": "^8.3.0",
     "@types/express": "^4.17.13",

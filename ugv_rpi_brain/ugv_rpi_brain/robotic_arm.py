@@ -1,4 +1,4 @@
-from flask_socketio import SocketIO, emit
+from flask_socketio import emit
 from . import serial_connection, open_serial_connection
 
 
@@ -16,6 +16,6 @@ def run_command(command):
                     break
 
                 emit(
-                    "info_channel",
+                    "rpi_info",
                     {"severityLevel": 10, "message": line},
                 )
