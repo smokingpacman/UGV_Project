@@ -18,7 +18,7 @@ module.exports = {
     'react-app',
     'prettier',
   ],
-  plugins: ['prettier'],
+  plugins: ['@typescript-eslint', 'prettier'],
   rules: {
     // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
     '@typescript-eslint/explicit-module-boundary-types': 'off',

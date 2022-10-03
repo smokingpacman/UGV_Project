@@ -1,0 +1,26 @@
+name: deploy-ui-server
+run-name: Test / Lint UGV Website UI Server
+on:
+  push:
+    paths:
+      - "ugv_ui_server/**"
+jobs:
+  deploy-ui:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: /ugv_ui_server
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+
+      - name: Install packages
+        run: npm install
+
+      - name: Linting
+        run: npx eslint ./src --ext .js,.jsx,.ts,.tsx
+
+      - name: Build
+        run: npm run prod
