@@ -26,8 +26,8 @@ module.exports = {
     'prettier/prettier': [
       'error',
       {
-        'endOfLine': 'auto',
-      }
+        endOfLine: 'auto',
+      },
     ],
     'no-underscore-dangle': 'warn',
   },
